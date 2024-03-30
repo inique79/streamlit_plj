@@ -9,9 +9,10 @@ division = ['nlw','nlc'] #내셔널 서부지구, 내셔널 중부지구
 team_id = [135,137,134] #샌디에고,샌프란시스코,피츠버그
 
 
+target_day = datetime.date.today() - datetime.timedelta(days=1)
+today = str(target_day.strftime('%m/%d/%Y'))
+print(today)
 
-
-today = '03/20/2024'
 class Playerstats:
     def __init__(self,player_id):
         self.player_id = player_id
@@ -22,8 +23,8 @@ class Playerstats:
 
     def get_gamedata(self,player_id,team_id):
         game = statsapi.schedule(start_date=today ,end_date=today,team=team_id) 
-        try:
 
+        try:
             if game:
                 game_id = game[0]['game_id']  #게임 아이디 확인 목적
                 if statsapi.boxscore_data(game_id, timecode=None)['teamInfo']['away']['id'] == team_id:
@@ -33,7 +34,6 @@ class Playerstats:
 
                 self.team_result={'금일 팀 성적' : statsapi.linescore(game_id)}
                 batting = statsapi.boxscore_data(game_id, timecode=None)[homeaway]['players']['ID'+str(player_id)]['stats']['batting']
-                print(batting)
                 self.game_data = {'안타': batting['hits'],  # 안타
                     '2루타' : batting['doubles'],  #2루타
                     '3루타' : batting['triples'], #3루타
@@ -50,6 +50,7 @@ class Playerstats:
                     '블론' : batting['homeRuns'],  #블론세이브
                     '피득점' : batting['strikeOuts'],  #피득점
                     '홀드' : batting['atBats']} #홀드
+                print(batting)
 
         except Exception as e:
             print('Error 발생')
@@ -83,22 +84,24 @@ class Playerstats:
 
     
     def season_rank(self):
-        try:
-            slug_rank = statsapi.league_leaders('onBasePlusSlugging',statGroup='hitting',limit=5,season=2024,leagueId=104)  #아메리칸리그 장타율 순위
-            avg_rank = statsapi.league_leaders('avg',statGroup='hitting',limit=5,season=2024,leagueId=104) #타율 순위
-            hits_rank = statsapi.league_leaders('hits',statGroup='hitting',limit=5,season=2024,leagueId=104) #안타 순위
-            obp_rank = statsapi.league_leaders('obp',statGroup='hitting',limit=5,season=2024,leagueId=104) #출루율 순위
-            rbi_rank= statsapi.league_leaders('rbi',statGroup='hitting',limit=5,season=2024,leagueId=104) # 타점 순위
-            runs_rank = statsapi.league_leaders('runs',statGroup='hitting',limit=5,season=2024,leagueId=104) #득점 순위
-            homeruns_rank = statsapi.league_leaders('homeRuns',statGroup='hitting',limit=5,season=2024,leagueId=104) #득점 순위
-            ops_rank = statsapi.league_leaders('ops',statGroup='hitting',limit=5,season=2024,leagueId=104) #ops순위
-            stolenBases_rank = statsapi.league_leaders('stolenBases',statGroup='hitting',limit=5,season=2024,leagueId=104) #도루 순위
-            return slug_rank, avg_rank, hits_rank, obp_rank, rbi_rank, runs_rank, ops_rank, stolenBases_rank,homeruns_rank
-        except Exception as e:
-            print(e)
+        
+            slug_rank = statsapi.league_leaders('onBasePlusSlugging',statGroup='hitting',limit=5,season=2024,leagueId='104')  #아메리칸리그 장타율 순위
+            avg_rank = statsapi.league_leaders('avg',statGroup='hitting',limit=5,season=2024,leagueId='104') #타율 순위
+            hits_rank = statsapi.league_leaders('hits',statGroup='hitting',limit=5,season=2024,leagueId='104') #안타 순위
+            obp_rank = statsapi.league_leaders('obp',statGroup='hitting',limit=5,season=2024,leagueId='104') #출루율 순위
+            rbi_rank= statsapi.league_leaders('rbi',statGroup='hitting',limit=5,season=2024,leagueId='104') # 타점 순위
+            runs_rank = statsapi.league_leaders('runs',statGroup='hitting',limit=5,season=2024,leagueId='104') #득점 순위
+            # homeruns_rank = statsapi.league_leaders('homeRuns',statGroup='hitting',limit=5,season=2024,leagueId='104') #득점 순위
+            ops_rank = statsapi.league_leaders('ops',statGroup='hitting',limit=5,season=2024,leagueId='104') #ops순위
+            stolenBases_rank = statsapi.league_leaders('stolenBases',statGroup='hitting',limit=5,season=2024,leagueId='104') #도루 순위
+            return slug_rank, avg_rank, hits_rank, obp_rank, rbi_rank, runs_rank, ops_rank, stolenBases_rank
+
 
 
 # if __name__ =='__main__':
 #     playerstat = Playerstats(673490)
 #     playerstat.get_gamedata(673490, 135)
     # print(playerstat.get_season_data(673490))
+
+play = Playerstats(808982)
+print(play.get_gamedata(808982,137))
