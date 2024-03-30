@@ -1,7 +1,6 @@
 import statsapi
 import pandas as pd
 import datetime
-from tabulate import tabulate
 
 
 player_id = [673490,808982,678225,808970] #김하성,이정후,배지환,고우석
